@@ -1,0 +1,4 @@
+[package]
+name = "simd-utf8-check"
+version = "0.1.0"
+authors = ["Pascal Hertleif <killercup@gmail.com>"]
