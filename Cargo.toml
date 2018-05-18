@@ -2,3 +2,6 @@
 name = "simd-utf8-check"
 version = "0.1.0"
 authors = ["Pascal Hertleif <killercup@gmail.com>"]
+
+[dependencies]
+encoding_rs = { version = "0.7.2", features = ["simd-accel"] }

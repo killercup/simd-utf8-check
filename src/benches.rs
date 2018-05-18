@@ -36,3 +36,8 @@ mod regular {
 mod simd {
     benches!(super::super::simd);
 }
+
+mod encoding {
+    extern crate encoding_rs as encoding;
+    benches!(encoding::Encoding::utf8_valid_up_to);
+}
