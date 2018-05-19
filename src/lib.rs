@@ -2,7 +2,6 @@
 
 mod std_validation;
 mod simd_validation;
-mod benches;
 
 pub use std_validation::run_utf8_validation as regular;
 pub use simd_validation::run_utf8_validation as simd;

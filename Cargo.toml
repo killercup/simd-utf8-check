@@ -2,6 +2,15 @@
 name = "simd-utf8-check"
 version = "0.1.0"
 authors = ["Pascal Hertleif <killercup@gmail.com>"]
+autobenches = false
+
+[[bench]]
+name = "validate-utf8"
+path = "criterion/validate-utf8.rs"
+harness = false
 
 [dependencies]
 encoding_rs = { version = "0.7.2", features = ["simd-accel"] }
+
+[dev-dependencies]
+criterion = { version = "0.2.3", features=['real_blackbox'] }
