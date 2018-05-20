@@ -4,6 +4,7 @@
 
 extern crate simd_utf8_check;
 extern crate encoding_rs as encoding;
+extern crate is_utf8;
 
 #[macro_use] extern crate criterion;
 use criterion::{Benchmark, Criterion, Throughput};
@@ -17,6 +18,8 @@ macro_rules! bench {
                 Benchmark::new("std", move |b| b.iter(|| ::simd_utf8_check::regular(text)))
                     .with_function("simd", move |b| b.iter(|| ::simd_utf8_check::simd(text)))
                     .with_function("encoding_rs", move |b| b.iter(|| encoding::Encoding::utf8_valid_up_to(text)))
+                    .with_function("is_utf8", move |b| b.iter(|| ::is_utf8::is_utf8(text)))
+                    .with_function("is_utf8_hoehrmann", move |b| b.iter(|| ::is_utf8::is_utf8_hoehrmann(text)))
                     .throughput(Throughput::Bytes(text.len() as u32))
             );
         }

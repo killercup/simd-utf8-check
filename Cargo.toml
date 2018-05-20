@@ -11,6 +11,7 @@ harness = false
 
 [dependencies]
 encoding_rs = { version = "0.7.2", features = ["simd-accel"] }
+is_utf8 = { git = "https://github.com/gnzlbg/is_utf8" }
 
 [dev-dependencies]
 criterion = { version = "0.2.3", features=['real_blackbox'] }
