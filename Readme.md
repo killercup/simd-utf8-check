@@ -18,27 +18,15 @@ albeit one that that not use explicit SIMD intrinsics.
 
 ```
 $ env RUSTFLAGS='-C target-cpu=native' cargo bench --quiet
-
-running 12 tests
-test benches::from_utf8_ascii_regular     ... bench:          87 ns/iter (+/- 24) = 29321 MB/s
-test benches::from_utf8_ascii_simd        ... bench:         871 ns/iter (+/- 264) = 2928 MB/s
-test benches::from_utf8_cyr_regular       ... bench:       6,791 ns/iter (+/- 2,017) = 755 MB/s
-test benches::from_utf8_cyr_simd          ... bench:       1,796 ns/iter (+/- 323) = 2857 MB/s
-test benches::from_utf8_enwik8_regular    ... bench:  12,755,057 ns/iter (+/- 1,489,178) = 7840 MB/s
-test benches::from_utf8_enwik8_simd       ... bench:  33,230,547 ns/iter (+/- 3,653,408) = 3009 MB/s
-test benches::from_utf8_jawik10_regular   ... bench: 275,079,207 ns/iter (+/- 10,982,357) = 743 MB/s
-test benches::from_utf8_jawik10_simd      ... bench:  68,982,078 ns/iter (+/- 5,608,421) = 2965 MB/s
-test benches::from_utf8_mixed_regular     ... bench:       2,101 ns/iter (+/- 503) = 2298 MB/s
-test benches::from_utf8_mixed_simd        ... bench:       1,708 ns/iter (+/- 267) = 2827 MB/s
-test benches::from_utf8_mostlyasc_regular ... bench:         216 ns/iter (+/- 44) = 16907 MB/s
-test benches::from_utf8_mostlyasc_simd    ... bench:       1,224 ns/iter (+/- 303) = 2983 MB/s
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 12 measured; 0 filtered out
+# ...
+$ open target/criterion/report/index.html
 ```
 
-(Measured on my late 2016 MacBook Pro with a Intel i7 6700HQ, and telling LLVM to use all features that this CPU supports.)
+[You can also  find the rendered report here.](https://killercup.github.io/simd-utf8-check/report/index.html)
+There are two runs, the first without and the second with the `target-cpu=native` flag.
+This was benchmarked on a late 2016 MacBook Pro with an Intel i7 6700HQ CPU.
 
-Looks like the current std impl is a bit faster for inputs that contain mostly ASCII,
+Currently, it looks like the current std impl is a bit faster for inputs that contain mostly ASCII,
 but the SIMD version gives a significant speedup when dealing with multi-byte codepoints.
 
 ### Data
