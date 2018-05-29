@@ -2,11 +2,12 @@
 //!
 //! cf <https://gist.github.com/bluss/bf45e07e711238e22b7a>
 
-extern crate simd_utf8_check;
 extern crate encoding_rs as encoding;
 extern crate is_utf8;
+extern crate simd_utf8_check;
 
-#[macro_use] extern crate criterion;
+#[macro_use]
+extern crate criterion;
 use criterion::{Benchmark, Criterion, Throughput};
 
 macro_rules! bench {
@@ -14,13 +15,27 @@ macro_rules! bench {
         fn $name(c: &mut Criterion) {
             let text = include_bytes!($path);
 
-            c.bench(stringify!($name),
+            c.bench(
+                stringify!($name),
                 Benchmark::new("std", move |b| b.iter(|| ::simd_utf8_check::regular(text)))
                     .with_function("simd", move |b| b.iter(|| ::simd_utf8_check::simd(text)))
-                    .with_function("encoding_rs", move |b| b.iter(|| encoding::Encoding::utf8_valid_up_to(text)))
+                    .with_function("encoding_rs", move |b| {
+                        b.iter(|| encoding::Encoding::utf8_valid_up_to(text))
+                    })
+                    .with_function("simd_or_encoding_rs_with_pre_check", move |b| {
+                        b.iter(|| {
+                            if ::simd_utf8_check::is_ascii_estimate_simd(text) {
+                                encoding::Encoding::utf8_valid_up_to(text) == text.len()
+                            } else {
+                                ::simd_utf8_check::simd(text)
+                            }
+                        })
+                    })
                     .with_function("is_utf8", move |b| b.iter(|| ::is_utf8::is_utf8(text)))
-                    .with_function("is_utf8_hoehrmann", move |b| b.iter(|| ::is_utf8::is_utf8_hoehrmann(text)))
-                    .throughput(Throughput::Bytes(text.len() as u32))
+                    .with_function("is_utf8_hoehrmann", move |b| {
+                        b.iter(|| ::is_utf8::is_utf8_hoehrmann(text))
+                    })
+                    .throughput(Throughput::Bytes(text.len() as u32)),
             );
         }
     };
@@ -34,5 +49,14 @@ bench!(enwiki8, "../tests/fixtures/long_cy.txt");
 bench!(jawik10, "../tests/fixtures/jawik10");
 bench!(big10, "../tests/fixtures/big10");
 
-criterion_group!(benches, ascii, mixed, mosty_ascii, cyr, enwiki8, jawik10, big10);
+criterion_group!(
+    benches,
+    ascii,
+    mixed,
+    mosty_ascii,
+    cyr,
+    enwiki8,
+    jawik10,
+    big10
+);
 criterion_main!(benches);
