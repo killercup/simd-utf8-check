@@ -263,7 +263,13 @@ pub fn run_utf8_validation(src: &[u8]) -> bool {
     // last part
     if i < len {
         let mut buffer = [0_u8; 16];
-        unsafe { ::std::ptr::copy_nonoverlapping(src.as_ptr().offset(i as isize), buffer.as_mut_ptr(), len - i) };
+        unsafe {
+            ::std::ptr::copy_nonoverlapping(
+                src.as_ptr().offset(i as isize),
+                buffer.as_mut_ptr(),
+                len - i,
+            )
+        };
         let current_bytes = unsafe { _mm_loadu_si128(buffer.as_ptr() as *const __m128i) };
         previous = check_utf8_bytes(current_bytes, &previous, &mut has_error);
     }
